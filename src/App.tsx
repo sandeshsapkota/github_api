@@ -1,11 +1,7 @@
+import HomePage from "./pages/home";
+
 function App() {
-    return (
-        <section className="h-screen bg-gray-100">
-            <div className="container">
-                okay
-            </div>
-        </section>
-    )
+    return <HomePage/>
 }
 
 export default App
