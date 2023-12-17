@@ -1,8 +1,8 @@
 import {combineReducers} from "redux";
-import listSlice from "./slices/list.slice.ts";
+import repositorySlice from "./slices/repository.slice.ts";
 
 const rootReducers = combineReducers({
-    list: listSlice.reducer
+    list: repositorySlice.reducer
 })
 
 export default rootReducers

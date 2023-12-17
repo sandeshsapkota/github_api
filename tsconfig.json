@@ -31,7 +31,8 @@
     "**/*.ts",
     "**/*.tsx",
     "module.d.ts",
-    "src/**/*"
+    "src/**/*",
+    "**/*.svg?react"
   ],
   "references": [
     {
