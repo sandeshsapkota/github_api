@@ -1,9 +1,9 @@
 import {Forks, Star, Watchers} from "@/components/icons";
 
 interface StatTypes {
-    stargazers_count: number,
-    watchers: number,
-    forks: number
+    stargazers_count: string,
+    watchers: string,
+    forks: string
 }
 
 const RepositoryStats = (props: StatTypes) => {
@@ -29,11 +29,11 @@ const RepositoryStats = (props: StatTypes) => {
     ]
 
     return (
-        <div className="flex flex-wrap text-gray-700 text-sm capitalize gap-2.5">
+        <div className="flex flex-wrap text-gray-500 text-xs font-medium capitalize  gap-3">
             {stats.map(item => {
                 const {label, component} = item
                 return (
-                    <div className="flex items-center">
+                    <div className="flex gap-1.5 items-center" key={label}>
                         {component}
                         {label}
                     </div>

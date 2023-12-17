@@ -1,4 +1,4 @@
-function formatDate(dateString: string): string {
+const  formatDate = (dateString: string): string  => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
         year: 'numeric',
@@ -8,7 +8,11 @@ function formatDate(dateString: string): string {
     return new Intl.DateTimeFormat('en-US', options).format(date);
 }
 
+const  addCommasToNumber = (number:any) => {
+    return number.toLocaleString();
+}
 
 export {
-    formatDate
+    formatDate,
+    addCommasToNumber
 }
