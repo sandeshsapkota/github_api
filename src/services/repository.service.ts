@@ -1,7 +1,10 @@
-import axios from "axios";
+import http from "@/utils/http/http.utils.ts";
 
 interface SearchParamTypes {
     q: string
+    page: number
+    per_page: string
+    order: string
 }
 
 /**
@@ -13,13 +16,12 @@ class RepositoryService {
      * @param query - query params
      */
     static async fetchRepositories(query: SearchParamTypes) {
-        const queryParams = new URLSearchParams();
-        queryParams.append("q", query.q);
-        const url = `https://api.github.com/search/repositories?${queryParams.toString()}`
+        const queryParams = new URLSearchParams(query);
+        const url = `/search/repositories?${queryParams.toString()}`
         try {
-            return await axios.get(url)
-        } catch (e) {
-            console.error(e)
+            return await http().get(url)
+        } catch (e: unknown) {
+            throw new Error(e)
         }
     }
 }
