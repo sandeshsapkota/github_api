@@ -1,30 +1,32 @@
 import { pagesOptions, orderingOptions } from '@/utils/constants/common';
 
-import FilterIcon from '@/assets/icons/filter.svg?react';
 import Dropdown from '@/components/dropdown';
-import SortSection from '@/pages/home/partials/filter/SortSections';
+import SortSection from '@/pages/search/partials/filter/SortSections';
+import FilterIcon from '@/assets/icons/filter.svg?react';
 
 interface SearchFilterTypes {
-  handleSortChange: (type: string, value: string) => void
-  selectedOrdering: string
-  selectedPerPage: string
+  handleSortChange: (type: string, value: string | number) => void;
+  selectedOrdering: string;
+  selectedPerPage: number;
 }
 
-function SearchFilter({ handleSortChange, selectedOrdering, selectedPerPage }: SearchFilterTypes) {
+function SearchFilter({
+  handleSortChange,
+  selectedOrdering,
+  selectedPerPage,
+}: SearchFilterTypes) {
   function trigger() {
     return (
-      <div className="flex gap-2.5 items-center rounded-xl hover:bg-gray-100 px-4 py-[18px]">
+      <div className="flex gap-2.5 items-center rounded-xl sm:hover:bg-gray-100 px-4 py-[18px] -mr-4 sm:mr-0">
         <FilterIcon />
-        Filter
+        <span className="hidden sm:block">Filter</span>
       </div>
     );
   }
 
   function content() {
     return (
-      <div
-        className="absolute right-0 z-[99] bg-white shadow-2xl p-5 sm:p-8 rounded-2xl padding-deducted-vw-width sm:w-[458px] grid gap-6"
-      >
+      <div className="grid gap-8">
         <SortSection
           title="Items per page"
           options={pagesOptions}

@@ -3,15 +3,15 @@ import Forks from '@/assets/icons/fork.svg?react';
 import Watchers from '@/assets/icons/watcher.svg?react';
 
 interface StatTypes {
-  stargazers_count: string,
-  watchers: string,
-  forks: string
+  stargazers_count: string;
+  watchers: string;
+  forks: string;
 }
 
 const RepositoryStats = (props: StatTypes) => {
   /*
-  * PROPS AND STATES
-  * */
+   * PROPS AND STATES
+   * */
   const { stargazers_count, forks, watchers } = props;
 
   const stats = [
