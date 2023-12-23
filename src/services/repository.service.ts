@@ -1,29 +1,24 @@
-import http from "@/utils/http/http.utils.ts";
+import http from '@/utils/http/http.utils';
 
-interface SearchParamTypes {
-    q: string
-    page: number
-    per_page: string
-    order: string
-}
+type SearchParamTypes = Record<'q' | 'page' | 'per_page' | 'order', string>;
 
 /**
  * Represents a service for fetching GitHub repositories
  */
 class RepositoryService {
-    /**
-     * Fetches repositories based on search params
-     * @param query - query params
-     */
-    static async fetchRepositories(query: SearchParamTypes) {
-        const queryParams = new URLSearchParams(query);
-        const url = `/search/repositories?${queryParams.toString()}`
-        try {
-            return await http().get(url)
-        } catch (e: unknown) {
-            throw new Error(e)
-        }
+  /**
+   * Fetches repositories based on search params
+   * @param query - query params
+   */
+  static async fetchRepositories(query: SearchParamTypes) {
+    const queryParams = new URLSearchParams(query);
+    const url = `/search/repositories?${queryParams.toString()}`;
+    try {
+      return await http().get(url);
+    } catch (e: any) {
+      throw new Error(e);
     }
+  }
 }
 
-export default RepositoryService
+export default RepositoryService;

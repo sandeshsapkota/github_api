@@ -1,8 +1,8 @@
-import {useRoutes} from "react-router";
-import routes from "@/routes";
+import { useRoutes } from 'react-router';
+import routes from '@/routes';
 
 function App() {
-    return useRoutes(routes)
+  return useRoutes(routes);
 }
 
-export default App
+export default App;

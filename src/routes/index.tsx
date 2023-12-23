@@ -1,17 +1,15 @@
-import Home from "@/pages/home";
-import Detail from "@/pages/detail";
+import SearchPage from '@/pages/search';
+import Detail from '@/pages/detail';
 
-const routes =
-    [
-        {
-            path: '/',
-            element: <Home/>,
-        },
-        {
-            path: '/repository/:id',
-            element: <Detail/>,
-        }
-    ]
+const routes = [
+  {
+    path: '/',
+    element: <SearchPage />,
+  },
+  {
+    path: '/repository/:id',
+    element: <Detail />,
+  },
+];
 
-
-export default routes
+export default routes;
