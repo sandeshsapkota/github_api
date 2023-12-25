@@ -2,13 +2,11 @@ import SearchClear from '@/assets/icons/search-clear.svg?react';
 import OpacityFader from '@/components/motion/OpacityFader';
 
 const ClearButton = ({
-  setQuery,
-  setSearchQuery,
+  onClick,
   query,
 }: {
-  setSearchQuery: (query: string) => void;
-  setQuery: (query: string) => void;
-  query: string;
+  onClick: () => void;
+  query: string | null;
 }) => (
   <OpacityFader
     animate={Boolean(query)}
@@ -16,10 +14,7 @@ const ClearButton = ({
   >
     <button
       type="button"
-      onClick={() => {
-        setSearchQuery('');
-        setQuery('');
-      }}
+      onClick={onClick}
       aria-label="search button"
       className="text-sm text-black hover:text-black/70 transition duration-200"
     >

@@ -1,4 +1,4 @@
-import IllustrationWrapper from '@/components/common/IllustrationWrapper.tsx';
+import IllustrationWrapper from '@/components/common/IllustrationWrapper';
 import TrySearchIllustration from '@/assets/icons/try-search-illustration.svg?react';
 
 function TrySearch() {

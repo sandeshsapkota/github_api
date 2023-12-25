@@ -10,9 +10,9 @@ const SortSection = ({
 }: {
   title: string;
   options: LabelValueType[];
-  selectedValue: string | number;
-  type: string;
-  handleSortChange: (type: string, option: string | number) => void;
+  selectedValue: any;
+  type: 'per_page' | 'order';
+  handleSortChange: (type: 'per_page' | 'order', option: any) => void;
 }) => (
   <div className="grid gap-1.5 text-sm">
     <span className="text-gray-600">{title}</span>

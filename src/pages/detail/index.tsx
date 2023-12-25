@@ -1,38 +1,89 @@
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { addCommasToNumber, formatDate } from '@/utils/helpers/date.utils';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
+import { addCommasToNumber } from '@/utils/helpers/date.utils';
 
-import { RootState } from '@/store/store';
-import { RepositoryType } from '@/@types/repository';
 import { DetailLabelValue } from '@/@types/common';
 
 import ArrowRight from '@/assets/icons/arrow-right.svg?react';
 import VisitSiteIcon from '@/assets/icons/visit-site.svg?react';
 import Button from '@/components/button';
+import RepositoryService from '@/services/repository.service';
+import ReadMeContent from '@/pages/detail/partials/ReadMeContent';
+
+type RepositoryInfo = {
+  name: string;
+  full_name?: string | null;
+  html_url: string;
+  owner_name: string;
+  profile_url: string;
+  default_branch: string;
+  open_issues_count: number;
+};
+
+const ProjectInfo = ({
+  label,
+  value,
+  link = undefined,
+}: {
+  label: string;
+  value: string | number;
+  link?: string | undefined;
+}) => (
+  <p className="text-sm">
+    <strong>{label}:</strong>
+    {link ? (
+      <a className="text-blue-500 text-sm pl-1" href={link}>
+        {value}
+      </a>
+    ) : (
+      <span className="pl-1">{value}</span>
+    )}
+  </p>
+);
 
 function Detail() {
   /*
-   * STATE
+   * fetching data from localStorage
+   * we have saved the repo information when user click to read more link
    * */
-  const { id } = useParams();
-  const repositories = useSelector(
-    (state: RootState) => state.list?.repositories,
-  );
+  const repositoryString: string | null = localStorage.getItem('repository');
+  const repository: RepositoryInfo = repositoryString
+    ? JSON.parse(repositoryString)
+    : {};
 
-  const repository: RepositoryType = repositories.find(
-    (item: RepositoryType) => item?.id === Number(id),
-  );
-  const { html_url: ownerProfileUrl } = repository?.owner || {};
+  const {
+    name,
+    full_name,
+    html_url,
+    owner_name,
+    profile_url,
+    default_branch,
+    open_issues_count,
+  } = repository;
+
+  const navigate = useNavigate();
+
+  /*
+   * FETCH README CONTENT
+   * */
+  const { isLoading: isLoadingReadMe, data } = useQuery({
+    queryKey: [],
+    queryFn: () =>
+      RepositoryService.fetchRepositoryReadMe({
+        repoName: name,
+        username: owner_name,
+      }),
+  });
 
   const header = () => (
     <div className="flex justify-between">
-      <Button href="/" type="secondary">
+      <Button type="secondary" onClick={() => navigate(-1)}>
         <span className="-rotate-180">
           <ArrowRight className="w-6 h-5" />
         </span>
         Go Back
       </Button>
-      <Button href={ownerProfileUrl} targetBlank>
+      <Button href={profile_url} targetBlank>
         <VisitSiteIcon />
         visit profile
       </Button>
@@ -41,59 +92,29 @@ function Detail() {
 
   const projectInfoArray: DetailLabelValue[] = [
     {
-      label: 'Repository',
-      value: repository.full_name,
-      link: repository.html_url,
+      label: 'Visit repository',
+      value: full_name as string,
+      link: html_url,
     },
     {
       label: 'Owner',
-      value: repository.owner.login,
-      link: repository.owner.html_url,
+      value: owner_name,
+      link: profile_url,
     },
-    { label: 'Default Branch', value: repository.default_branch },
+    { label: 'Default Branch', value: default_branch },
     {
       label: 'Open Issues',
-      value: addCommasToNumber(repository.open_issues_count),
+      value: addCommasToNumber(open_issues_count),
     },
-    { label: 'Description', value: repository?.description },
-    { label: 'Language', value: repository?.language },
-    { label: 'Size', value: `${addCommasToNumber(repository.size)} KB` },
-    { label: 'Stars', value: addCommasToNumber(repository.stargazers_count) },
-    { label: 'Watchers', value: addCommasToNumber(repository.watchers_count) },
-    { label: 'Forks', value: addCommasToNumber(repository.forks_count) },
-    { label: 'Created At', value: formatDate(repository.created_at) },
-    { label: 'Last Updated', value: formatDate(repository.updated_at) },
-    { label: 'Latest Pushed At', value: formatDate(repository.pushed_at) },
   ];
-
-  const ProjectInfo = ({
-    label,
-    value,
-    link = undefined,
-  }: {
-    label: string;
-    value: string | number;
-    link?: string | undefined;
-  }) => (
-    <p className="text-sm">
-      <strong>{label}:</strong>
-      {link ? (
-        <a className="text-blue-500 text-sm pl-1" href={link}>
-          {value}
-        </a>
-      ) : (
-        <span className="pl-1">{value}</span>
-      )}
-    </p>
-  );
 
   return (
     <section className="min-h-screen py-6 sm:py-8">
-      <div className="container grid gap-6 sm:gap-8">
+      <div className="container grid gap-4 sm:gap-8">
         {header()}
-        <div className="bg-gray-100 p-5 sm:p-8 rounded-md shadow-md">
-          <h1 className="text-3xl font-bold mb-4">{repository?.name}</h1>
-          <div className="grid gap-2">
+        <div className="grid gap-8">
+          <h1 className="text-3xl font-bold">{repository?.name}</h1>
+          <div className="grid bg-gray-50  p-5 rounded-xl gap-2 ">
             {projectInfoArray.map((info: DetailLabelValue) => (
               <ProjectInfo
                 label={info.label}
@@ -102,6 +123,13 @@ function Detail() {
                 key={info.value}
               />
             ))}
+          </div>
+          <div className="bg-gray-100 p-6 rounded-xl overflow-auto">
+            <h1 className="text-3xl font-bold mb-5">README.md</h1>
+            <ReadMeContent
+              content={data?.data?.content}
+              isLoading={isLoadingReadMe}
+            />
           </div>
         </div>
       </div>

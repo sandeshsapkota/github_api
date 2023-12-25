@@ -2,13 +2,12 @@ import ReactPaginate from 'react-paginate';
 import { RepositoryType } from '@/@types/repository';
 
 import RepositoryItem from '@/pages/search/partials/repository/RepositoryItem';
-import NoData from '@/components/common/NoData';
 
 const RepositoryList = (props: {
   repositories: RepositoryType[];
   page: number;
   pageCount: number;
-  handlePageClick: (value: { selected: number }) => void;
+  handlePageClick: (value: number) => void;
 }) => {
   /*
    * PROPS AND STATE
@@ -23,21 +22,17 @@ const RepositoryList = (props: {
       {repositories?.map((repository: RepositoryType) => (
         <RepositoryItem key={repository?.id} repository={repository} />
       ))}
-      {repositories?.length ? (
-        <ReactPaginate
-          breakLabel="..."
-          nextLabel="Next"
-          previousLabel="Prev"
-          onPageChange={handlePageClick}
-          forcePage={page}
-          pageCount={Math.ceil(pageCount)}
-          pageRangeDisplayed={pageRangeDisplayed}
-          marginPagesDisplayed={1}
-          className="pagination flex flex-wrap"
-        />
-      ) : (
-        <NoData />
-      )}
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="Next"
+        previousLabel="Prev"
+        onPageChange={(value) => handlePageClick(Number(value?.selected) + 1)}
+        forcePage={page - 1}
+        pageCount={Math.ceil(pageCount)}
+        pageRangeDisplayed={pageRangeDisplayed}
+        marginPagesDisplayed={1}
+        className="pagination flex flex-wrap"
+      />
     </ul>
   );
 };

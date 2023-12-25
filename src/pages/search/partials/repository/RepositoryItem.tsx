@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router';
 import { RepositoryType } from '@/@types/repository';
 
 import { addCommasToNumber, formatDate } from '@/utils/helpers/date.utils';
@@ -14,6 +15,7 @@ const RepositoryItem = ({ repository }: RepositoryItemProps) => {
   /*
    * PROPS AND STATES
    * */
+  const navigate = useNavigate();
   const {
     full_name,
     updated_at,
@@ -28,6 +30,26 @@ const RepositoryItem = ({ repository }: RepositoryItemProps) => {
   const formattedStargazers = addCommasToNumber(stargazers_count);
   const formattedForks = addCommasToNumber(forks);
   const updatedDate = formatDate(updated_at);
+
+  const redirectToDetailPage = () => {
+    navigate(`/repository/${id}`);
+
+    /* saving repository info on localStorage is to persist data
+     * so we can get it even refreshing detail page
+     * persisting only one data for now
+     * */
+    const repo = {
+      name: repository.name,
+      full_name: repository?.full_name,
+      html_url: repository.html_url,
+      owner_name: repository.owner.login,
+      profile_url: repository.owner.html_url,
+      default_branch: repository.default_branch,
+      open_issues_count: repository.open_issues_count,
+    };
+
+    localStorage.setItem('repository', JSON.stringify(repo));
+  };
 
   return (
     <li className="bg-gray-50 hover:bg-gray-200   transition duration-300 rounded-xl p-5 md:p-8 shadow grid gap-4">
@@ -60,7 +82,7 @@ const RepositoryItem = ({ repository }: RepositoryItemProps) => {
           Last updated on
           <b className="text-gray-600 pl-1">{updatedDate}</b>
         </p>
-        <Button href={`/repository/${id}`} loading>
+        <Button onClick={redirectToDetailPage} buttonType="button">
           <span>Read More</span>
           <ArrowRight className="w-5" />
         </Button>
