@@ -3,9 +3,9 @@ import Forks from '@/assets/icons/fork.svg?react';
 import Watchers from '@/assets/icons/watcher.svg?react';
 
 interface StatTypes {
-  stargazers_count: string;
-  watchers: string;
-  forks: string;
+  stargazers_count: number;
+  watchers: number;
+  forks: number;
 }
 
 const RepositoryStats = (props: StatTypes) => {
@@ -16,7 +16,9 @@ const RepositoryStats = (props: StatTypes) => {
 
   const stats = [
     {
-      label: `${stargazers_count} stars`,
+      label: `${stargazers_count} ${
+        stargazers_count === 1 ? 'star' : 'stars'
+      } `,
       component: <Star />,
     },
     {

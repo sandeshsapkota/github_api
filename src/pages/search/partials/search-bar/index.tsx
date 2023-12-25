@@ -6,19 +6,26 @@ import SearchClearButton from '@/pages/search/partials/search-bar/SearchClearBut
 import Button from '@/components/button';
 
 interface SearchBarProps {
+  query: string | null;
   setSearchQuery: (value: string) => void;
+  onClearSearch: () => void;
 }
 
 const Index = (props: SearchBarProps) => {
   /*
    * PROPS AND STATES
    * */
-  const { setSearchQuery } = props;
-  const [query, setQuery] = useState<string>('');
+  const { query: existingQuery, setSearchQuery, onClearSearch } = props;
+  const [query, setQuery] = useState<string>(existingQuery || '');
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSearchQuery(query);
+  };
+
+  const clearSearch = () => {
+    setQuery('');
+    onClearSearch();
   };
 
   const desktopSearchIcon = () => {
@@ -50,11 +57,7 @@ const Index = (props: SearchBarProps) => {
           }
           value={query}
         />
-        <SearchClearButton
-          setSearchQuery={setSearchQuery}
-          setQuery={setQuery}
-          query={query}
-        />
+        <SearchClearButton onClick={clearSearch} query={query} />
       </div>
       {mobileSearchButton()}
     </form>

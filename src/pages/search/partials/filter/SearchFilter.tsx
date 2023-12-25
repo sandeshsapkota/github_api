@@ -5,8 +5,11 @@ import SortSection from '@/pages/search/partials/filter/SortSections';
 import FilterIcon from '@/assets/icons/filter.svg?react';
 
 interface SearchFilterTypes {
-  handleSortChange: (type: string, value: string | number) => void;
-  selectedOrdering: string;
+  handleSortChange: (
+    type: 'per_page' | 'order',
+    value: string | number,
+  ) => void;
+  selectedOrdering: string | null;
   selectedPerPage: number;
 }
 
@@ -31,14 +34,14 @@ function SearchFilter({
           title="Items per page"
           options={pagesOptions}
           selectedValue={selectedPerPage}
-          type="perPage"
+          type="per_page"
           handleSortChange={handleSortChange}
         />
         <SortSection
           title="Order by"
           options={orderingOptions}
           selectedValue={selectedOrdering}
-          type="ordering"
+          type="order"
           handleSortChange={handleSortChange}
         />
       </div>

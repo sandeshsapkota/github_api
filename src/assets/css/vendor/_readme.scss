@@ -1,0 +1,107 @@
+/* Headers */
+.reactMarkDown h1 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+.reactMarkDown h2 {
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.reactMarkDown h3 {
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+/* Paragraphs */
+.reactMarkDown p {
+  margin-bottom: 1em;
+}
+
+/* Links */
+.reactMarkDown a {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* Lists */
+.reactMarkDown ul {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  list-style: disc outside none;
+}
+
+.reactMarkDown ul li {
+  margin-left: 2em;
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+.reactMarkDown ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  list-style: decimal outside none;
+}
+
+.reactMarkDown ol li {
+  margin-left: 2em;
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+/* Blockquotes */
+.reactMarkDown blockquote {
+  margin: 0;
+  padding-left: 1em;
+  border-left: 2px solid #007bff;
+  color: #555;
+}
+
+/* Code blocks */
+.reactMarkDown pre {
+  margin: 1em 0;
+  padding: 1em;
+  background-color: rgb(229 231 235);
+  border-radius: 0.25em;
+  overflow: auto;
+}
+
+.reactMarkDown code {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: rgb(229 231 235);
+  padding: 0.2em 0.4em;
+  border: 1px solid #ccc;
+  border-radius: 0.25em;
+  overflow: auto;
+}
+
+/* Horizontal Rule */
+.reactMarkDown hr {
+  margin: 1em 0;
+  border: 0;
+  border-top: 1px solid #ccc;
+}
+
+/* Images */
+.reactMarkDown img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tables */
+.reactMarkDown table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.reactMarkDown th,
+.reactMarkDown td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.reactMarkDown th {
+  background-color: #f2f2f2;
+}

@@ -1,4 +1,4 @@
-import { generateItems } from '@/utils/helpers/common.utils.ts';
+import { generateItems } from '@/utils/helpers/common.utils';
 
 const Skeleton = () => {
   return (

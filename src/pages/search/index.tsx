@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useDispatch } from 'react-redux';
-
-import { setRepositoryList } from '@/store/slices/repository.slice';
 
 import RepositoryService from '@/services/repository.service';
 
@@ -14,89 +12,121 @@ import RepositoryList from '@/pages/search/partials/repository/RepositoryList';
 import RepositorySkeleton from '@/components/skeletons/RepositorySkeleton';
 import TrySearch from '@/components/common/TrySearch';
 import Error from '@/components/common/Error';
+import NoData from '@/components/common/NoData';
+
+type FilterTypes = {
+  q: string | null;
+  per_page: number;
+  page: number;
+  order: string;
+};
 
 function Home() {
   /*
    * STATE
    * */
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchParam, setSearchParam] = useSearchParams();
 
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(25);
-  const [order, setOrder] = useState('asc');
+  const [param, setParam] = useState<FilterTypes>({
+    q: searchParam.get('q'),
+    per_page: Number(searchParam.get('per_page')) || 10,
+    page: Number(searchParam.get('page')) || 1,
+    order: searchParam.get('order') || 'asc',
+  });
 
-  const dispatch = useDispatch();
+  const { q: query, per_page, page, order } = param;
 
   /*
    * REACT QUERY
    * */
-  const {
-    data: repositories,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['repositories', searchQuery, perPage, order, page],
+  const { data, isLoading, error } = useQuery<any>({
+    queryKey: ['repositories', param],
     queryFn: () => {
-      return RepositoryService.fetchRepositories({
-        q: searchQuery,
-        per_page: String(perPage),
-        order,
-        page: String(page),
-      });
+      return RepositoryService.fetchRepositories(param);
     },
-    enabled: Boolean(searchQuery),
+    enabled: Boolean(param.q),
     retry: 0,
   });
 
-  useEffect(() => {
-    dispatch(setRepositoryList(repositories?.data?.items));
-  }, [repositories, dispatch]);
-
-  const totalCount = repositories?.data?.total_count;
+  const { items, total_count } = data?.data || {};
 
   /*
    * HANDLERS
    * */
-  const handlePageClick = (value: { selected: number }) =>
-    setPage(value?.selected);
+  const updateFilter = (
+    type: 'q' | 'page' | 'per_page' | 'order',
+    value: string | number,
+  ) => {
+    // combine the existing search state with the new filter
+    const updatedParams = { ...param, [type]: value };
 
-  const handleSearch = (query: string) => {
-    setPage(0);
-    setSearchQuery(query);
+    // reset page to 0 when user changes per_page, order, or query
+    const resetPageTypes = ['q', 'per_page', 'order'];
+    if (resetPageTypes.includes(type)) {
+      updatedParams.page = 1;
+    }
+    setParam(updatedParams);
+    // change URL only when there is a search query
+    if (query || type === 'q') {
+      setSearchParam(updatedParams as any);
+    }
   };
 
-  const handleSortChange = (type: string, value: string | number) => {
-    type === 'ordering'
-      ? setOrder(value as string)
-      : setPerPage(value as number);
-    setPage(1);
+  const clearSearch = () => {
+    setSearchParam({});
+    setParam({
+      q: '',
+      per_page: 10,
+      page: 1,
+      order: 'asc',
+    });
   };
 
-  const foundItemsCount = () => (
-    <div className="flex items-center justify-end">
-      {repositories?.data?.total_count !== undefined && (
+  const renderSearchInformation = () => (
+    <div className="flex justify-between">
+      {!error && param?.q && (
         <p className="text-xs">
-          <b className="pr-1">{addCommasToNumber(totalCount)}</b>
-          repositories found.
+          Showing results for <b className="pl-1">{query}</b>
         </p>
       )}
+      <div className="flex items-center justify-end">
+        {total_count !== undefined && (
+          <p className="text-xs">
+            <b className="pr-1">{addCommasToNumber(total_count)}</b>
+            repositories found.
+          </p>
+        )}
+      </div>
     </div>
   );
 
-  const searchResult = () => {
-    const searchQueryResponse = () =>
-      isLoading ? (
-        <RepositorySkeleton limit={perPage} />
-      ) : (
-        <RepositoryList
-          repositories={repositories?.data?.items || []}
-          page={page}
-          handlePageClick={handlePageClick}
-          pageCount={Math.ceil(totalCount / perPage)}
-        />
-      );
+  const renderResultsContent = () => {
+    if (isLoading) {
+      return <RepositorySkeleton limit={per_page} />;
+    }
 
-    return searchQuery ? searchQueryResponse() : <TrySearch />;
+    if (!param.q) {
+      return <TrySearch />;
+    }
+
+    if (error?.message) {
+      return <Error />;
+    }
+
+    if (!items.length) {
+      return <NoData />;
+    }
+
+    return (
+      <RepositoryList
+        repositories={items || []}
+        page={page}
+        handlePageClick={(value) => {
+          updateFilter('page', value);
+        }}
+        pageCount={Math.ceil(total_count / per_page)}
+      />
+    );
   };
 
   return (
@@ -105,24 +135,20 @@ function Home() {
         <div className="grid gap-10 py-9 lg:w-4/5 mx-auto">
           <div className="grid gap-6">
             <div className="flex sm:gap-4 items-center ">
-              <SearchBar setSearchQuery={handleSearch} />
+              <SearchBar
+                setSearchQuery={(value) => updateFilter('q', value)}
+                onClearSearch={clearSearch}
+                query={query}
+              />
               <SearchFilter
                 selectedOrdering={order}
-                selectedPerPage={perPage}
-                handleSortChange={handleSortChange}
+                selectedPerPage={per_page}
+                handleSortChange={updateFilter}
               />
             </div>
-            <div className="flex justify-between">
-              {!error && searchQuery && (
-                <p className="text-xs">
-                  Showing results for
-                  <b className="pl-1">{searchQuery}</b>
-                </p>
-              )}
-              {foundItemsCount()}
-            </div>
+            {renderSearchInformation()}
           </div>
-          {error?.message ? <Error /> : searchResult()}
+          {renderResultsContent()}
         </div>
       </div>
     </section>
