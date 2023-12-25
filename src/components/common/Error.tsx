@@ -1,4 +1,4 @@
-import IllustrationWrapper from '@/components/common/IllustrationWrapper.tsx';
+import IllustrationWrapper from '@/components/common/IllustrationWrapper';
 import ServerErrorIllustration from '@/assets/icons/server-error-illustration.svg?react';
 
 function SearchError() {
