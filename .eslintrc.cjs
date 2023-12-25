@@ -46,6 +46,7 @@ module.exports = {
         'prettier/prettier': 'error',
         "react/jsx-props-no-spreading": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "react/require-default-props": "off"
+        "react/require-default-props": "off",
+        "import/prefer-default-export": "off"
     },
 }

@@ -18,16 +18,7 @@ const http = () => {
       return response;
     },
     (error) => {
-      if (error.response) {
-        if (error.response.status === 422) {
-          console.log('hiiii');
-        }
-      } else if (error.request) {
-        console.error('Request error:', error.request);
-      } else {
-        console.error('General error:', error.message);
-      }
-
+      console.log(error);
       return Promise.reject(error);
     },
   );

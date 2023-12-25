@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import repositorySlice from './slices/repository.slice.ts';
+import repositorySlice from './slices/repository.slice';
 
 const rootReducers = combineReducers({
   list: repositorySlice.reducer,
