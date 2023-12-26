@@ -1,5 +1,5 @@
-const generateItems = (limit: number) => {
+const generateIncrementalArray = (limit: number) => {
   return Array.from({ length: limit }, (_, index) => index + 1);
 };
 
-export { generateItems };
+export { generateIncrementalArray };

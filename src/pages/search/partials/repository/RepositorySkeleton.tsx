@@ -1,4 +1,4 @@
-import { generateItems } from '@/utils/helpers/common.utils';
+import { generateIncrementalArray } from '@/utils/helpers/common.utils';
 
 const Skeleton = () => {
   return (
@@ -29,10 +29,10 @@ const Skeleton = () => {
   );
 };
 
-const RepositorySkeleton = ({ limit }: { limit: number }) => {
+const RepositorySkeleton = ({ perPage }: { perPage: number }) => {
   return (
     <div className="grid gap-6">
-      {generateItems(limit).map((item: number) => (
+      {generateIncrementalArray(perPage).map((item: number) => (
         <Skeleton key={item} />
       ))}
     </div>

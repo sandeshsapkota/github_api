@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 
 import SearchIcon from '@/assets/icons/search.svg?react';
-import SearchClearButton from '@/pages/search/partials/search-bar/SearchClearButton';
 
+import SearchClearButton from '@/pages/search/partials/search-bar/SearchClearButton';
 import Button from '@/components/button';
 
 interface SearchBarProps {
@@ -11,11 +11,17 @@ interface SearchBarProps {
   onClearSearch: () => void;
 }
 
-const Index = (props: SearchBarProps) => {
+const SearchBar = (props: SearchBarProps) => {
   /*
    * PROPS AND STATES
    * */
   const { query: existingQuery, setSearchQuery, onClearSearch } = props;
+
+  /*
+   * adding a separate state for query here
+   * to show clear button if there is query - otherwise
+   * we could always show the clear button and access the query with ref
+   * */
   const [query, setQuery] = useState<string>(existingQuery || '');
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
@@ -38,7 +44,10 @@ const Index = (props: SearchBarProps) => {
 
   const mobileSearchButton = () => {
     return (
-      <Button className="flex sm:hidden !rounded-md !py-0 !px-2">
+      <Button
+        className="flex sm:hidden !rounded-md !py-0 !px-2"
+        buttonType="submit"
+      >
         <SearchIcon className="w-8 h-8 translate-y-0.5" />
       </Button>
     );
@@ -64,4 +73,4 @@ const Index = (props: SearchBarProps) => {
   );
 };
 
-export default Index;
+export default SearchBar;
