@@ -10,7 +10,7 @@ interface StatTypes {
 
 const RepositoryStats = (props: StatTypes) => {
   /*
-   * PROPS AND STATES
+   * PROPS
    * */
   const { stargazers_count, forks, watchers } = props;
 

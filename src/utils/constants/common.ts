@@ -1,5 +1,7 @@
 import { LabelValueType } from '@/@types/common';
 
+const REPOSITORY_DEFAULT_PER_PAGE = 10;
+
 const pagesOptions: LabelValueType[] = [
   { value: 10, label: '10' },
   { value: 25, label: '25' },
@@ -11,4 +13,4 @@ const orderingOptions: LabelValueType[] = [
   { value: 'dsc', label: 'Descending' },
 ];
 
-export { pagesOptions, orderingOptions };
+export { pagesOptions, orderingOptions, REPOSITORY_DEFAULT_PER_PAGE };

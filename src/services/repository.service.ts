@@ -2,12 +2,14 @@ import http from '@/utils/http/http.utils';
 /**
  * Represents a service for fetching GitHub repositories
  */
+type SearchParamTypes = Record<'q' | 'page' | 'per_page' | 'order', string>;
+
 class RepositoryService {
   /**
    * Fetches repositories based on search params
    * @param data - query params
    */
-  static async fetchRepositories(data: any) {
+  static async fetchRepositories(data: SearchParamTypes) {
     const queryParams = new URLSearchParams(data);
     const url = `/search/repositories?${queryParams.toString()}`;
     try {

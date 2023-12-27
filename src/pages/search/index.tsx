@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
+import { REPOSITORY_DEFAULT_PER_PAGE } from '@/utils/constants/common';
+
 import RepositoryService from '@/services/repository.service';
 
 import { addCommasToNumber } from '@/utils/helpers/date.utils';
@@ -9,13 +11,13 @@ import { addCommasToNumber } from '@/utils/helpers/date.utils';
 import SearchBar from '@/pages/search/partials/search-bar';
 import SearchFilter from '@/pages/search/partials/filter/SearchFilter';
 import RepositoryList from '@/pages/search/partials/repository/RepositoryList';
-import RepositorySkeleton from '@/components/skeletons/RepositorySkeleton';
+import RepositorySkeleton from '@/pages/search/partials/repository/RepositorySkeleton';
 import TrySearch from '@/components/common/TrySearch';
 import Error from '@/components/common/Error';
 import NoData from '@/components/common/NoData';
 
 type FilterTypes = {
-  q: string | null;
+  q: string;
   per_page: number;
   page: number;
   order: string;
@@ -23,17 +25,20 @@ type FilterTypes = {
 
 function Home() {
   /*
-   * STATE
+   * FOR HANDLING URL
    * */
   const [searchParam, setSearchParam] = useSearchParams();
 
+  /*
+   * FOR THE COMPONENT STATE
+   * */
   const [param, setParam] = useState<FilterTypes>({
-    q: searchParam.get('q'),
-    per_page: Number(searchParam.get('per_page')) || 10,
+    q: searchParam.get('q') || '',
+    per_page:
+      Number(searchParam.get('per_page')) || REPOSITORY_DEFAULT_PER_PAGE,
     page: Number(searchParam.get('page')) || 1,
     order: searchParam.get('order') || 'asc',
   });
-
   const { q: query, per_page, page, order } = param;
 
   /*
@@ -42,7 +47,11 @@ function Home() {
   const { data, isLoading, error } = useQuery<any>({
     queryKey: ['repositories', param],
     queryFn: () => {
-      return RepositoryService.fetchRepositories(param);
+      return RepositoryService.fetchRepositories({
+        ...param,
+        per_page: String(param.per_page),
+        page: String(param.page),
+      });
     },
     enabled: Boolean(param.q),
     retry: 0,
@@ -73,12 +82,16 @@ function Home() {
   };
 
   const clearSearch = () => {
+    /* clearing the url */
     setSearchParam({});
+    /*
+     * only clearing query and current page
+     * leaving per page and order as it is.
+     * */
     setParam({
+      ...param,
       q: '',
-      per_page: 10,
       page: 1,
-      order: 'asc',
     });
   };
 
@@ -102,7 +115,7 @@ function Home() {
 
   const renderResultsContent = () => {
     if (isLoading) {
-      return <RepositorySkeleton limit={per_page} />;
+      return <RepositorySkeleton perPage={per_page} />;
     }
 
     if (!param.q) {
